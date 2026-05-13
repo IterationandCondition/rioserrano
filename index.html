@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Río Serrano Hotel + Spa · Consulta de Disponibilidad</title>
+<title>Río Serrano Hotel + Spa</title>
 <style>
   :root {
     --bg: #f7f5f0;
@@ -15,12 +15,10 @@
     --accent-soft: #e6efe9;
     --border: #e3e0d8;
     --danger: #a13c2e;
-    --warn-bg: #fdf1e5;
+    --warn-bg: #fef6e8;
     --warn-ink: #7a4a16;
     --urgency-bg: #fef0e8;
     --urgency-ink: #b04020;
-    --ok-bg: #e6f0e9;
-    --ok-ink: #2f5d4f;
     --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 24px rgba(0,0,0,.06);
     --shadow-lg: 0 4px 12px rgba(0,0,0,.08), 0 12px 40px rgba(0,0,0,.10);
   }
@@ -33,28 +31,64 @@
     line-height: 1.5;
     min-height: 100vh;
   }
-  header { background: var(--ink); color: white; padding: 18px 24px; }
-  header .brand {
+  header.site { background: var(--ink); color: white; padding: 14px 24px; }
+  header.site .row {
     max-width: 1100px; margin: 0 auto;
-    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    justify-content: space-between;
   }
-  header .brand h1 { margin: 0; font-size: 18px; font-weight: 500; }
-  header .brand .sub {
-    font-size: 12px; color: rgba(255,255,255,.65);
+  header.site .brand { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  header.site h1 { margin: 0; font-size: 17px; font-weight: 500; }
+  header.site .sub {
+    font-size: 11px; color: rgba(255,255,255,.6);
     letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .lang-switch {
+    display: flex; gap: 4px; background: rgba(255,255,255,.08);
+    padding: 4px; border-radius: 100px;
+  }
+  .lang-switch button {
+    background: transparent; border: 0; color: rgba(255,255,255,.55);
+    padding: 4px 11px; border-radius: 100px; cursor: pointer;
+    font-family: inherit; font-size: 13px; display: flex;
+    align-items: center; gap: 5px; transition: background .15s, color .15s;
+  }
+  .lang-switch button:hover { color: white; }
+  .lang-switch button.active {
+    background: rgba(255,255,255,.18); color: white; font-weight: 500;
   }
   .hero {
     background: linear-gradient(180deg, #2a3d36 0%, #1a2622 100%);
-    color: white; padding: 56px 24px 72px; text-align: center;
+    color: white; padding: 52px 24px 64px; text-align: center;
   }
-  .hero h2 { font-size: 32px; font-weight: 400; margin: 0 0 12px; }
+  .hero h2 { font-size: 30px; font-weight: 400; margin: 0 0 10px; }
   .hero p {
-    color: rgba(255,255,255,.75); max-width: 560px; margin: 0 auto; font-size: 15px;
+    color: rgba(255,255,255,.72); max-width: 560px; margin: 0 auto; font-size: 15px;
   }
-  main { max-width: 1100px; margin: -48px auto 48px; padding: 0 24px; position: relative; }
+  main { max-width: 1100px; margin: -42px auto 48px; padding: 0 24px; position: relative; }
+  .context-bar {
+    background: var(--surface); border-radius: 12px;
+    box-shadow: var(--shadow); padding: 14px 18px; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .context-bar .back-btn {
+    background: transparent; border: 0; color: var(--accent);
+    font-family: inherit; font-size: 13px; cursor: pointer; padding: 0;
+  }
+  .context-bar .back-btn:hover { text-decoration: underline; }
+  .context-bar .ctx-parts {
+    display: flex; gap: 8px; flex-wrap: wrap; color: var(--ink-muted); align-items: center;
+  }
+  .context-bar .ctx-part { display: flex; align-items: center; gap: 8px; }
+  .context-bar .ctx-part::after {
+    content: "·"; color: var(--ink-soft); margin-left: 8px;
+  }
+  .context-bar .ctx-part:last-child::after { content: ""; }
+  .context-bar .ctx-part strong { color: var(--ink); font-weight: 500; }
   .search-card {
     background: var(--surface); border-radius: 12px;
-    box-shadow: var(--shadow); padding: 24px;
+    box-shadow: var(--shadow); padding: 22px;
   }
   .search-grid {
     display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto;
@@ -68,42 +102,44 @@
     display: block; font-size: 11px; color: var(--ink-soft);
     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
   }
-  .field input, .field select {
+  .field input, .field select, .field textarea {
     width: 100%; border: 1px solid var(--border); background: white;
     border-radius: 8px; padding: 10px 12px; font-size: 15px;
     font-family: inherit; color: var(--ink);
   }
-  .field input:focus, .field select:focus {
+  .field input:focus, .field select:focus, .field textarea:focus {
     outline: none; border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-soft);
   }
+  .field input.invalid, .field select.invalid {
+    border-color: var(--danger);
+  }
+  .field .err-msg {
+    color: var(--danger); font-size: 11px; margin-top: 4px; display: none;
+  }
+  .field.has-error .err-msg { display: block; }
   button.primary {
     background: var(--accent); color: white; border: 0;
     border-radius: 8px; padding: 11px 22px; font-size: 15px;
     font-weight: 500; cursor: pointer; font-family: inherit; white-space: nowrap;
   }
   button.primary:hover { background: #244a3f; }
-  button.primary:disabled { background: var(--ink-soft); cursor: wait; }
-  .status { margin: 20px 0 8px; font-size: 14px; color: var(--ink-muted); min-height: 20px; }
+  button.primary:disabled { background: var(--ink-soft); cursor: not-allowed; }
+  .status { margin: 18px 0 4px; font-size: 14px; color: var(--ink-muted); min-height: 18px; }
   .status.err { color: var(--danger); }
-
   .results-header {
     background: var(--surface); border-radius: 12px;
-    box-shadow: var(--shadow); padding: 20px 24px; margin-top: 16px;
+    box-shadow: var(--shadow); padding: 18px 22px; margin-top: 16px;
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 12px;
   }
-  .results-header .info h3 { margin: 0 0 2px; font-size: 20px; font-weight: 500; }
+  .results-header .info h3 { margin: 0 0 2px; font-size: 18px; font-weight: 500; }
   .results-header .info p { margin: 0; color: var(--ink-muted); font-size: 13px; }
   .results-header .counter {
     background: var(--accent-soft); color: var(--accent);
     padding: 6px 12px; border-radius: 100px; font-size: 13px; font-weight: 500;
   }
-
-  .rooms-grid {
-    display: flex; flex-direction: column; gap: 16px; margin-top: 16px;
-  }
-
+  .rooms-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
   .room-card {
     background: var(--surface); border-radius: 12px; overflow: hidden;
     box-shadow: var(--shadow); display: grid;
@@ -111,11 +147,7 @@
   }
   .room-card:hover { box-shadow: var(--shadow-lg); }
   .room-card.unavail { opacity: 0.55; }
-
-  @media (max-width: 760px) {
-    .room-card { grid-template-columns: 1fr; }
-  }
-
+  @media (max-width: 760px) { .room-card { grid-template-columns: 1fr; } }
   .room-image {
     background-size: cover; background-position: center;
     background-color: #ddd; min-height: 240px; position: relative;
@@ -132,96 +164,169 @@
     background: rgba(0,0,0,.55); color: white;
     padding: 3px 9px; border-radius: 4px;
     font-size: 10px; letter-spacing: 0.08em;
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-family: ui-monospace, monospace;
   }
-
-  .room-body { padding: 20px 22px; }
-  .room-body h3 { margin: 0 0 8px; font-size: 21px; font-weight: 500; }
+  .room-body { padding: 20px 22px; display: flex; flex-direction: column; }
+  .room-body h3 { margin: 0 0 8px; font-size: 20px; font-weight: 500; }
   .room-body .desc {
     color: var(--ink-muted); font-size: 14px; margin: 0 0 14px;
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
-    overflow: hidden;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
-
   .features {
     display: flex; gap: 14px; flex-wrap: wrap;
     margin-bottom: 14px; padding-bottom: 14px;
     border-bottom: 1px solid var(--border);
   }
-  .feature {
-    font-size: 12px; color: var(--ink-muted);
-    display: flex; align-items: center; gap: 4px;
-  }
+  .feature { font-size: 12px; color: var(--ink-muted); display: flex; align-items: center; gap: 4px; }
   .feature strong { color: var(--ink); font-weight: 500; }
-
-  .amenities-list {
-    font-size: 12px; color: var(--ink-muted);
-    margin-bottom: 16px; line-height: 1.7;
-  }
+  .amenities-list { font-size: 12px; color: var(--ink-muted); margin-bottom: 16px; line-height: 1.7; }
   .amenity-pill {
     display: inline-block; background: var(--bg);
     padding: 2px 8px; border-radius: 4px; margin: 0 4px 4px 0;
   }
-  .amenity-pill.premium {
-    background: var(--accent-soft); color: var(--accent);
+  .amenity-pill.premium { background: var(--accent-soft); color: var(--accent); }
+  .price-toggle {
+    width: 100%; display: flex; justify-content: space-between; align-items: center;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 16px; cursor: pointer; text-align: left; font-family: inherit;
+    transition: background .15s, border-color .15s;
   }
-
-  .rates {
-    display: flex; flex-direction: column; gap: 8px;
+  .price-toggle:hover { background: #f1eee5; border-color: var(--ink-soft); }
+  .price-toggle .price-info { display: flex; flex-direction: column; gap: 2px; }
+  .price-toggle .label-from {
+    font-size: 11px; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.06em;
   }
+  .price-toggle .price-main { font-size: 22px; font-weight: 500; line-height: 1.1; }
+  .price-toggle .price-main small { font-size: 13px; color: var(--ink-soft); font-weight: 400; }
+  .price-toggle .price-meta { font-size: 11px; color: var(--ink-muted); }
+  .price-toggle .caret {
+    font-size: 20px; color: var(--ink-soft); transition: transform .2s;
+  }
+  .price-toggle.expanded .caret { transform: rotate(180deg); }
+  .rates-container { display: none; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .rates-container.open { display: flex; }
   .rate-option {
-    display: flex; justify-content: space-between; align-items: center;
-    background: var(--bg); padding: 10px 14px; border-radius: 8px;
-    gap: 12px;
+    border: 1px solid var(--border); background: white; border-radius: 8px;
+    padding: 14px 16px; cursor: pointer;
+    transition: border-color .15s, background .15s;
   }
-  .rate-option .plan {
-    flex: 1; min-width: 0;
+  .rate-option:hover { border-color: var(--accent); background: #fbfaf6; }
+  .rate-option.selected {
+    border: 2px solid var(--accent); background: var(--accent-soft);
+    padding: 13px 15px;
   }
-  .rate-option .plan-name {
-    font-size: 13px; font-weight: 500; color: var(--ink);
+  .rate-option .rate-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 14px; margin-bottom: 8px;
   }
-  .rate-option .plan-detail {
-    font-size: 11px; color: var(--ink-soft); margin-top: 2px;
+  .rate-option .rate-name {
+    font-size: 15px; font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
   }
-  .rate-option .price { text-align: right; }
-  .rate-option .price .per-night {
-    font-size: 17px; font-weight: 500; color: var(--ink); line-height: 1;
+  .rate-option.selected .rate-name::before { content: "✓"; color: var(--accent); font-weight: 600; }
+  .rate-option .rate-price { text-align: right; flex-shrink: 0; }
+  .rate-option .rate-price .per-night { font-size: 17px; font-weight: 500; line-height: 1; }
+  .rate-option .rate-price .per-night small { font-size: 11px; color: var(--ink-soft); font-weight: 400; }
+  .rate-option .rate-price .total { font-size: 11px; color: var(--ink-muted); margin-top: 3px; }
+  .rate-option .rate-desc { font-size: 12px; color: var(--ink-muted); line-height: 1.55; margin: 0 0 8px; }
+  .rate-option .rate-cancel {
+    font-size: 11px; color: var(--ink-soft);
+    padding-top: 8px; border-top: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 6px;
   }
-  .rate-option .price .per-night small { font-size: 11px; color: var(--ink-soft); font-weight: 400; }
-  .rate-option .price .total {
-    font-size: 11px; color: var(--ink-muted); margin-top: 3px;
-  }
-
   .room-cta {
     margin-top: 14px; padding-top: 14px;
     border-top: 1px solid var(--border);
     display: flex; justify-content: flex-end; align-items: center; gap: 12px;
   }
-  .room-cta .stock {
-    font-size: 12px; color: var(--ink-muted); margin-right: auto;
+  .room-cta .stock { font-size: 12px; color: var(--ink-muted); margin-right: auto; }
+  .room-cta button {
+    background: var(--ink); color: white; border: 0;
+    padding: 9px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit;
   }
-  .room-cta a {
-    background: var(--ink); color: white; text-decoration: none;
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  .room-cta button:hover:not(:disabled) { background: #2c322f; }
+  .room-cta button:disabled { background: var(--ink-soft); cursor: not-allowed; }
+  .bed-page { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 32px; }
+  .bed-page h2 { margin: 0 0 8px; font-size: 26px; font-weight: 400; text-align: center; }
+  .bed-page .sub { color: var(--ink-muted); font-size: 14px; text-align: center; margin: 0 0 28px; }
+  .bed-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 20px; max-width: 720px; margin: 0 auto;
   }
-  .room-cta a:hover { background: #2c322f; }
-
-  footer {
-    text-align: center; padding: 32px 24px;
-    color: var(--ink-soft); font-size: 12px;
+  @media (max-width: 600px) { .bed-grid { grid-template-columns: 1fr; } }
+  .bed-card {
+    border: 2px solid var(--border); border-radius: 12px;
+    background: white; overflow: hidden; cursor: pointer;
+    transition: border-color .2s, transform .15s;
   }
+  .bed-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .bed-card.selected { border-color: var(--accent); background: var(--accent-soft); }
+  .bed-card .bed-img {
+    width: 100%; height: 220px;
+    background-size: cover; background-position: center;
+    background-color: #ddd;
+  }
+  .bed-card .bed-body { padding: 18px 20px; }
+  .bed-card .bed-title {
+    font-size: 17px; font-weight: 500; margin: 0 0 4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .bed-card.selected .bed-title::before { content: "✓"; color: var(--accent); }
+  .bed-card .bed-desc { color: var(--ink-muted); font-size: 13px; margin: 0; }
+  .form-page { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 28px; }
+  .form-page h2 { margin: 0 0 4px; font-size: 24px; font-weight: 500; }
+  .form-page .form-sub { color: var(--ink-muted); font-size: 14px; margin: 0 0 24px; }
+  .form-section { margin-bottom: 28px; }
+  .form-section h3 {
+    margin: 0 0 14px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted);
+  }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-grid .span-2 { grid-column: 1 / -1; }
+  .info-box {
+    background: var(--warn-bg); color: var(--warn-ink);
+    padding: 10px 14px; border-radius: 8px; font-size: 13px;
+    margin-bottom: 16px; display: flex; align-items: flex-start; gap: 8px;
+  }
+  .info-box .ic { font-size: 16px; flex-shrink: 0; }
+  .terms-row { display: flex; align-items: flex-start; gap: 10px; margin-top: 8px; }
+  .terms-row input[type=checkbox] { margin-top: 3px; flex-shrink: 0; }
+  .terms-row label { font-size: 13px; color: var(--ink-muted); line-height: 1.5; }
+  .terms-row.required label { color: var(--ink); }
+  .submit-row {
+    margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 12px; align-items: center;
+  }
+  .submit-row .total-side {
+    margin-right: auto; font-size: 13px; color: var(--ink-muted);
+  }
+  .submit-row .total-side strong {
+    display: block; font-size: 22px; color: var(--ink); margin-top: 2px;
+  }
+  .submit-btn {
+    background: var(--accent); color: white; border: 0;
+    padding: 14px 28px; border-radius: 8px;
+    font-size: 16px; font-weight: 500; cursor: pointer; font-family: inherit;
+  }
+  .submit-btn:hover:not(:disabled) { background: #244a3f; }
+  .submit-btn:disabled { background: var(--ink-soft); cursor: not-allowed; }
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  footer { text-align: center; padding: 30px 24px; color: var(--ink-soft); font-size: 12px; }
   .skeleton {
     background: linear-gradient(90deg, #f0eee7 0%, #fafaf7 50%, #f0eee7 100%);
     background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px;
   }
-  @keyframes shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   .empty-state {
-    background: var(--surface); border-radius: 12px;
-    box-shadow: var(--shadow); padding: 48px 24px;
-    text-align: center; margin-top: 16px;
+    background: var(--surface); border-radius: 12px; box-shadow: var(--shadow);
+    padding: 48px 24px; text-align: center; margin-top: 16px;
   }
   .empty-state h3 { margin: 0 0 8px; font-weight: 500; }
   .empty-state p { margin: 0; color: var(--ink-muted); font-size: 14px; }
@@ -229,70 +334,405 @@
 </head>
 <body>
 
-<header>
-  <div class="brand">
-    <h1>Río Serrano Hotel + Spa</h1>
-    <span class="sub">Torres del Paine · Patagonia</span>
+<header class="site">
+  <div class="row">
+    <div class="brand">
+      <h1>Río Serrano Hotel + Spa</h1>
+      <span class="sub" data-i18n="brandSub">Torres del Paine · Patagonia</span>
+    </div>
+    <div class="lang-switch">
+      <button id="lang-es" class="active" onclick="setLang('es')"><span>🇨🇱</span> ES</button>
+      <button id="lang-en" onclick="setLang('en')"><span>🇬🇧</span> EN</button>
+    </div>
   </div>
 </header>
 
-<section class="hero">
-  <h2>Habitaciones disponibles</h2>
-  <p>Disponibilidad y tarifas en tiempo real, directo del motor de reservas oficial.</p>
-</section>
-
-<main>
-  <div class="search-card">
-    <form id="form-search" class="search-grid">
-      <div class="field">
-        <label for="check_in">Check-in</label>
-        <input type="date" id="check_in" required>
-      </div>
-      <div class="field">
-        <label for="check_out">Check-out</label>
-        <input type="date" id="check_out" required>
-      </div>
-      <div class="field">
-        <label for="adultos">Adultos</label>
-        <select id="adultos">
-          <option>1</option>
-          <option selected>2</option>
-          <option>3</option>
-          <option>4</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="ninos">Niños</label>
-        <select id="ninos">
-          <option selected>0</option>
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-        </select>
-      </div>
-      <div class="btn-cell">
-        <button type="submit" class="primary" id="btn-search">Consultar</button>
-      </div>
-    </form>
-    <div class="status" id="status"></div>
+<section id="screen-rooms" class="screen active">
+  <div class="hero">
+    <h2 data-i18n="heroTitle">Habitaciones disponibles</h2>
+    <p data-i18n="heroSub">Disponibilidad y tarifas en tiempo real, directo del motor de reservas oficial.</p>
   </div>
 
-  <div id="result"></div>
-</main>
+  <main>
+    <div class="search-card">
+      <form id="form-search" class="search-grid">
+        <div class="field">
+          <label for="check_in" data-i18n="checkin">Check-in</label>
+          <input type="date" id="check_in" required>
+        </div>
+        <div class="field">
+          <label for="check_out" data-i18n="checkout">Check-out</label>
+          <input type="date" id="check_out" required>
+        </div>
+        <div class="field">
+          <label for="adultos" data-i18n="adults">Adultos</label>
+          <select id="adultos">
+            <option>1</option><option selected>2</option><option>3</option><option>4</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="ninos" data-i18n="children">Niños</label>
+          <select id="ninos">
+            <option selected>0</option><option>1</option><option>2</option><option>3</option>
+          </select>
+        </div>
+        <div class="btn-cell">
+          <button type="submit" class="primary" id="btn-search" data-i18n="searchBtn">Consultar</button>
+        </div>
+      </form>
+      <div class="status" id="status"></div>
+    </div>
+
+    <div id="result"></div>
+  </main>
+</section>
+
+<section id="screen-bed" class="screen">
+  <main style="margin-top: 24px;">
+    <div class="context-bar">
+      <button class="back-btn" onclick="goToScreen('rooms')">← <span data-i18n="back">Volver</span></button>
+      <div class="ctx-parts" id="ctx-bed"></div>
+    </div>
+    <div class="bed-page">
+      <h2 data-i18n="bedTitle">Elige tu configuración de cama</h2>
+      <p class="sub" data-i18n="bedSub">Sin costo adicional · Solo preferencia</p>
+      <div class="bed-grid">
+        <div class="bed-card" id="bed-king" onclick="selectBed('king')">
+          <div class="bed-img" id="bed-img-king"></div>
+          <div class="bed-body">
+            <p class="bed-title" data-i18n="bedKing">1 cama King Size</p>
+            <p class="bed-desc" data-i18n="bedKingDesc">Ideal para parejas</p>
+          </div>
+        </div>
+        <div class="bed-card" id="bed-twin" onclick="selectBed('twin')">
+          <div class="bed-img" id="bed-img-twin"></div>
+          <div class="bed-body">
+            <p class="bed-title" data-i18n="bedTwin">2 camas Twin</p>
+            <p class="bed-desc" data-i18n="bedTwinDesc">Ideal para amigos o familia</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</section>
+
+<section id="screen-guest" class="screen">
+  <main style="margin-top: 24px;">
+    <div class="context-bar">
+      <button class="back-btn" onclick="goToScreen('bed')">← <span data-i18n="back">Volver</span></button>
+      <div class="ctx-parts" id="ctx-guest"></div>
+    </div>
+    <div class="form-page">
+      <h2 data-i18n="guestTitle">Datos para tu reserva</h2>
+      <p class="form-sub" data-i18n="guestSub">Completa la información del huésped principal y los datos de garantía.</p>
+      <form id="reserve-form" onsubmit="confirmarReserva(event)">
+        <div class="form-section">
+          <h3 data-i18n="section1">Información del huésped</h3>
+          <div class="form-grid">
+            <div class="field">
+              <label for="g-firstname" data-i18n="firstname">Nombre *</label>
+              <input type="text" id="g-firstname" required minlength="2">
+              <div class="err-msg" data-i18n="errRequired">Campo obligatorio</div>
+            </div>
+            <div class="field">
+              <label for="g-lastname" data-i18n="lastname">Apellido *</label>
+              <input type="text" id="g-lastname" required minlength="2">
+              <div class="err-msg" data-i18n="errRequired">Campo obligatorio</div>
+            </div>
+            <div class="field">
+              <label for="g-email" data-i18n="email">Email *</label>
+              <input type="email" id="g-email" required>
+              <div class="err-msg" data-i18n="errEmail">Email no válido</div>
+            </div>
+            <div class="field">
+              <label for="g-phone" data-i18n="phone">Teléfono *</label>
+              <input type="tel" id="g-phone" required placeholder="+56 9 1234 5678">
+              <div class="err-msg" data-i18n="errRequired">Campo obligatorio</div>
+            </div>
+            <div class="field span-2">
+              <label for="g-country" data-i18n="country">País *</label>
+              <select id="g-country" required>
+                <option value="">—</option>
+                <option value="CL" selected>Chile</option>
+                <option value="AR">Argentina</option>
+                <option value="BR">Brasil</option>
+                <option value="UY">Uruguay</option>
+                <option value="PE">Perú</option>
+                <option value="CO">Colombia</option>
+                <option value="MX">México</option>
+                <option value="US">Estados Unidos</option>
+                <option value="CA">Canadá</option>
+                <option value="ES">España</option>
+                <option value="FR">Francia</option>
+                <option value="DE">Alemania</option>
+                <option value="UK">Reino Unido</option>
+                <option value="OTHER" data-i18n="countryOther">Otro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-section">
+          <h3 data-i18n="section2">Tarjeta de garantía</h3>
+          <div class="info-box">
+            <span class="ic">🔒</span>
+            <span data-i18n="cardInfo">Tu tarjeta es solo garantía — no se realiza ningún cobro al reservar. La política de cancelación se aplica 30 días antes del check-in.</span>
+          </div>
+          <div class="form-grid">
+            <div class="field span-2">
+              <label for="c-name" data-i18n="cardholder">Nombre del titular *</label>
+              <input type="text" id="c-name" required minlength="3" autocomplete="cc-name">
+              <div class="err-msg" data-i18n="errRequired">Campo obligatorio</div>
+            </div>
+            <div class="field span-2">
+              <label for="c-number" data-i18n="cardnumber">Número de tarjeta *</label>
+              <input type="text" id="c-number" required inputmode="numeric"
+                     placeholder="0000 0000 0000 0000" maxlength="23" autocomplete="cc-number">
+              <div class="err-msg" data-i18n="errCard">Número de tarjeta inválido</div>
+            </div>
+            <div class="field">
+              <label for="c-exp" data-i18n="expiry">Expiración (MM/AA) *</label>
+              <input type="text" id="c-exp" required inputmode="numeric"
+                     placeholder="MM/AA" maxlength="5" autocomplete="cc-exp">
+              <div class="err-msg" data-i18n="errExp">Fecha inválida</div>
+            </div>
+            <div class="field">
+              <label for="c-cvv">CVV *</label>
+              <input type="text" id="c-cvv" required inputmode="numeric"
+                     placeholder="123" maxlength="4" autocomplete="cc-csc">
+              <div class="err-msg" data-i18n="errCvv">CVV inválido</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-section">
+          <h3 data-i18n="section3">Solicitudes especiales</h3>
+          <div class="form-grid">
+            <div class="field span-2">
+              <label for="e-arrival" data-i18n="arrival">Hora estimada de llegada</label>
+              <select id="e-arrival">
+                <option value="" data-i18n="arrivalNone">Sin preferencia</option>
+                <option>12:00</option><option>12:30</option>
+                <option>13:00</option><option>13:30</option>
+                <option>14:00</option><option>14:30</option>
+                <option>15:00</option><option>15:30</option>
+                <option>16:00</option><option>16:30</option>
+                <option>17:00</option><option>17:30</option>
+                <option>18:00</option><option>18:30</option>
+                <option>19:00</option><option>19:30</option>
+                <option>20:00</option><option>20:30</option>
+                <option>21:00</option><option>21:30</option>
+                <option>22:00</option><option>22:30</option>
+                <option>23:00</option>
+              </select>
+            </div>
+            <div class="field span-2">
+              <label for="e-comments" data-i18n="comments">Comentarios o solicitudes</label>
+              <textarea id="e-comments" rows="3" data-i18n-placeholder="commentsPh"
+                placeholder="Ej: restricciones alimentarias, celebración especial, llegada tarde…"></textarea>
+            </div>
+            <div class="span-2">
+              <div class="terms-row required">
+                <input type="checkbox" id="e-terms" required>
+                <label for="e-terms"><span data-i18n="termsLabel">Acepto los </span>
+                  <a href="https://rioserrano.com" target="_blank" rel="noopener" style="color: var(--accent);" data-i18n="termsLink">términos y condiciones</a>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="submit-row">
+          <div class="total-side">
+            <span data-i18n="totalLabel">Total a garantizar</span>
+            <strong id="total-display">USD 0</strong>
+          </div>
+          <button type="submit" class="submit-btn" id="btn-confirm" data-i18n="confirmBtn">
+            Confirmar reserva
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</section>
 
 <footer>
-  Demo conectada directamente al motor de reservas oficial del hotel.<br>
-  Para reservar, ingresa a <a href="https://rioserrano.com" style="color:inherit">rioserrano.com</a>.
+  <span data-i18n="footerNote">Conectado directamente al motor de reservas oficial del hotel.</span><br>
+  <a href="https://rioserrano.com" style="color: inherit;">rioserrano.com</a>
 </footer>
 
 <script>
+const I18N = {
+  es: {
+    brandSub: "Torres del Paine · Patagonia",
+    heroTitle: "Habitaciones disponibles",
+    heroSub: "Disponibilidad y tarifas en tiempo real, directo del motor de reservas oficial.",
+    checkin: "Check-in", checkout: "Check-out",
+    adults: "Adultos", children: "Niños",
+    searchBtn: "Consultar",
+    statusConnecting: "Conectando con el motor de reservas. La primera consulta puede tardar 30-60 segundos…",
+    nightsPlural: "noches", nightsSingle: "noche",
+    typesAvail: "tipos disponibles",
+    available: "Disponible", noAvail: "No disponible para estas fechas",
+    urgency: "¡Quedan pocas!",
+    from: "Desde", perNight: "/noche", totalLabel: "Total a garantizar",
+    ratesPlural: "tarifas disponibles — click para ver",
+    ratesSingle: "tarifa disponible — click para ver",
+    selectRate: "Selecciona una tarifa →",
+    reserveWith: "Reservar con",
+    roomsPlural: "habitaciones disponibles", roomsSingle: "habitación disponible",
+    noRooms: "Sin habitaciones para estas fechas",
+    tryOther: "Prueba con un rango distinto o consulta directamente al hotel.",
+    back: "Volver",
+    bedTitle: "Elige tu configuración de cama",
+    bedSub: "Sin costo adicional · Solo preferencia",
+    bedKing: "1 cama King Size", bedKingDesc: "Ideal para parejas",
+    bedTwin: "2 camas Twin", bedTwinDesc: "Ideal para amigos o familia",
+    guestTitle: "Datos para tu reserva",
+    guestSub: "Completa la información del huésped principal y los datos de garantía.",
+    section1: "Información del huésped",
+    section2: "Tarjeta de garantía",
+    section3: "Solicitudes especiales",
+    firstname: "Nombre *", lastname: "Apellido *",
+    email: "Email *", phone: "Teléfono *", country: "País *",
+    countryOther: "Otro",
+    cardInfo: "Tu tarjeta es solo garantía — no se realiza ningún cobro al reservar. La política de cancelación se aplica 30 días antes del check-in.",
+    cardholder: "Nombre del titular *",
+    cardnumber: "Número de tarjeta *",
+    expiry: "Expiración (MM/AA) *",
+    arrival: "Hora estimada de llegada",
+    arrivalNone: "Sin preferencia",
+    comments: "Comentarios o solicitudes",
+    commentsPh: "Ej: restricciones alimentarias, celebración especial, llegada tarde…",
+    termsLabel: "Acepto los ", termsLink: "términos y condiciones",
+    confirmBtn: "Confirmar reserva",
+    errRequired: "Campo obligatorio",
+    errEmail: "Email no válido",
+    errCard: "Número de tarjeta inválido",
+    errExp: "Fecha inválida",
+    errCvv: "CVV inválido",
+    footerNote: "Conectado directamente al motor de reservas oficial del hotel.",
+    confirmAlertTitle: "Reserva lista (paso siguiente: enviar a OPERA)",
+  },
+  en: {
+    brandSub: "Torres del Paine · Patagonia",
+    heroTitle: "Available rooms",
+    heroSub: "Real-time availability and rates, directly from the official booking engine.",
+    checkin: "Check-in", checkout: "Check-out",
+    adults: "Adults", children: "Children",
+    searchBtn: "Search",
+    statusConnecting: "Connecting to the booking engine. First query may take 30-60 seconds…",
+    nightsPlural: "nights", nightsSingle: "night",
+    typesAvail: "types available",
+    available: "Available", noAvail: "Not available for these dates",
+    urgency: "Only a few left!",
+    from: "From", perNight: "/night", totalLabel: "Amount to guarantee",
+    ratesPlural: "rates available — click to view",
+    ratesSingle: "rate available — click to view",
+    selectRate: "Select a rate →",
+    reserveWith: "Book with",
+    roomsPlural: "rooms available", roomsSingle: "room available",
+    noRooms: "No rooms for these dates",
+    tryOther: "Try a different range or contact the hotel directly.",
+    back: "Back",
+    bedTitle: "Choose your bed configuration",
+    bedSub: "No extra cost · Preference only",
+    bedKing: "1 King Size bed", bedKingDesc: "Ideal for couples",
+    bedTwin: "2 Twin beds", bedTwinDesc: "Ideal for friends or family",
+    guestTitle: "Your reservation details",
+    guestSub: "Complete the main guest information and guarantee details.",
+    section1: "Guest information",
+    section2: "Guarantee card",
+    section3: "Special requests",
+    firstname: "First name *", lastname: "Last name *",
+    email: "Email *", phone: "Phone *", country: "Country *",
+    countryOther: "Other",
+    cardInfo: "Your card is only a guarantee — no charge is made at booking. Cancellation policy applies 30 days before check-in.",
+    cardholder: "Cardholder name *",
+    cardnumber: "Card number *",
+    expiry: "Expiry (MM/YY) *",
+    arrival: "Estimated arrival time",
+    arrivalNone: "No preference",
+    comments: "Comments or requests",
+    commentsPh: "Ex: dietary restrictions, special celebration, late arrival…",
+    termsLabel: "I accept the ", termsLink: "terms and conditions",
+    confirmBtn: "Confirm booking",
+    errRequired: "Required field",
+    errEmail: "Invalid email",
+    errCard: "Invalid card number",
+    errExp: "Invalid date",
+    errCvv: "Invalid CVV",
+    footerNote: "Connected directly to the official booking engine.",
+    confirmAlertTitle: "Booking ready (next step: send to OPERA)",
+  }
+};
+
+let currentLang = localStorage.getItem('rs-lang') || 'es';
 const $ = id => document.getElementById(id);
 
-// Fechas por defecto: arrancar desde septiembre 2026
+function t(key) { return (I18N[currentLang] && I18N[currentLang][key]) || I18N.es[key] || key; }
+
+function applyI18n() {
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+  $('lang-es').classList.toggle('active', currentLang === 'es');
+  $('lang-en').classList.toggle('active', currentLang === 'en');
+}
+
+function setLang(lang) {
+  if (lang === currentLang) return;
+  currentLang = lang;
+  localStorage.setItem('rs-lang', lang);
+  applyI18n();
+  if (window._lastData) {
+    goToScreen('rooms');
+    buscar({ preventDefault: () => {} });
+  }
+}
+
+const reservaState = {
+  habitacion: null, ratePlan: null, bedType: null,
+  fechas: null, ocupacion: null, total: 0, moneda: 'USD',
+  huesped: null, tarjeta: null, extras: null,
+};
+
+const BED_IMAGES_BASE = 'https://bookings.travelclick.com/assets/hotel/99498/media/room/detail-image/';
+const BED_IMAGES = {
+  SUP:  { king: '21_enhanced.jpg', twin: '18_enhanced.jpg' },
+  STD:  { king: '37_enhanced.jpg', twin: '51_enhanced.jpg' },
+  MIRO: { king: '55_enhanced.jpg', twin: '32_enhanced.jpg' },
+};
+
+function goToScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $('screen-' + name).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function fmtMoney(n, currency) {
+  return new Intl.NumberFormat(currentLang === 'es' ? 'es-CL' : 'en-US', {
+    style: 'currency', currency: currency || 'USD',
+    maximumFractionDigits: 0,
+  }).format(n);
+}
+
+function fmtDate(yyyymmdd) {
+  const [y, m, d] = yyyymmdd.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dt.toLocaleDateString(currentLang === 'es' ? 'es-CL' : 'en-US',
+    { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+function statusMsg(text, isError = false) {
+  const s = $('status');
+  s.textContent = text;
+  s.className = 'status' + (isError ? ' err' : '');
+}
+
 (function initDates() {
   const today = new Date();
-  // Si hoy es antes de septiembre 2026, default a 15 sep 2026 / 17 sep 2026
-  // Si ya pasó septiembre 2026, default a 30 días desde hoy
   let dIn, dOut;
   const sep15_2026 = new Date('2026-09-15');
   if (today < sep15_2026) {
@@ -318,33 +758,10 @@ $('check_in').addEventListener('change', e => {
   }
 });
 
-function fmtMoney(n, currency) {
-  return new Intl.NumberFormat('es-CL', {
-    style: 'currency', currency: currency || 'USD',
-    maximumFractionDigits: 0,
-  }).format(n);
-}
-
-function fmtDate(yyyymmdd) {
-  const [y, m, d] = yyyymmdd.split('-').map(Number);
-  const dt = new Date(y, m - 1, d);
-  return dt.toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', month: 'short' });
-}
-
-function statusMsg(text, isError = false) {
-  const s = $('status');
-  s.textContent = text;
-  s.className = 'status' + (isError ? ' err' : '');
-}
-
 function renderSkeleton() {
-  $('result').innerHTML = `
-    <div class="rooms-grid">
-      ${Array(3).fill().map(() => `
-        <div class="skeleton" style="height: 280px;"></div>
-      `).join('')}
-    </div>
-  `;
+  $('result').innerHTML = `<div class="rooms-grid">${
+    Array(3).fill().map(() => `<div class="skeleton" style="height: 280px;"></div>`).join('')
+  }</div>`;
 }
 
 async function buscar(e) {
@@ -354,112 +771,84 @@ async function buscar(e) {
   const adultos  = $('adultos').value;
   const ninos    = $('ninos').value;
 
-  if (checkOut <= checkIn) {
-    statusMsg('La fecha de salida debe ser posterior a la de entrada.', true);
-    return;
-  }
+  if (checkOut <= checkIn) { statusMsg(t('errRequired'), true); return; }
 
   $('btn-search').disabled = true;
-  $('btn-search').textContent = 'Consultando…';
-  statusMsg('Conectando con el motor de reservas. La primera consulta puede tardar 30-60 segundos…');
+  statusMsg(t('statusConnecting'));
   renderSkeleton();
 
   try {
-    const url = `/api/disponibilidad?check_in=${checkIn}&check_out=${checkOut}&adultos=${adultos}&ninos=${ninos}`;
+    const url = `/api/disponibilidad?check_in=${checkIn}&check_out=${checkOut}&adultos=${adultos}&ninos=${ninos}&lang=${currentLang}`;
     const r = await fetch(url);
     if (!r.ok) {
       const err = await r.json().catch(() => ({}));
       throw new Error(err.detail || `Error ${r.status}`);
     }
     const data = await r.json();
+    window._lastData = data;
     renderResult(data);
     statusMsg('');
   } catch (err) {
-    statusMsg('No se pudo obtener disponibilidad: ' + err.message, true);
+    statusMsg('⚠ ' + err.message, true);
     $('result').innerHTML = '';
   } finally {
     $('btn-search').disabled = false;
-    $('btn-search').textContent = 'Consultar';
   }
 }
 
 function renderResult(data) {
-  const { habitaciones, noches, moneda, check_in, check_out, adultos, ninos } = data;
+  const { habitaciones, noches, check_in, check_out, adultos, ninos } = data;
   const disponibles = habitaciones.filter(h => h.disponible);
 
   if (habitaciones.length === 0) {
-    $('result').innerHTML = `
-      <div class="empty-state">
-        <h3>Sin habitaciones para estas fechas</h3>
-        <p>Prueba con un rango distinto o consulta directamente al hotel.</p>
-      </div>
-    `;
+    $('result').innerHTML = `<div class="empty-state"><h3>${t('noRooms')}</h3><p>${t('tryOther')}</p></div>`;
     return;
   }
 
+  const nightsLabel = noches === 1 ? t('nightsSingle') : t('nightsPlural');
   const header = `
     <div class="results-header">
       <div class="info">
         <h3>${fmtDate(check_in)} → ${fmtDate(check_out)}</h3>
-        <p>${noches} ${noches === 1 ? 'noche' : 'noches'} · ${adultos} adultos${ninos > 0 ? ` · ${ninos} niños` : ''}</p>
+        <p>${noches} ${nightsLabel} · ${adultos} ${t('adults').toLowerCase()}${ninos > 0 ? ' · ' + ninos + ' ' + t('children').toLowerCase() : ''}</p>
       </div>
-      <div class="counter">${disponibles.length} de ${habitaciones.length} tipos disponibles</div>
-    </div>
-  `;
+      <div class="counter">${disponibles.length} / ${habitaciones.length} ${t('typesAvail')}</div>
+    </div>`;
 
-  const rooms = habitaciones.map(h => renderRoom(h, moneda, check_in, check_out)).join('');
-
-  $('result').innerHTML = header + `<div class="rooms-grid">${rooms}</div>`;
+  $('result').innerHTML = header + `<div class="rooms-grid">${
+    habitaciones.map(h => renderRoom(h, data)).join('')
+  }</div>`;
 }
 
-function renderRoom(h, moneda, checkIn, checkOut) {
-  const imgBg = h.imagen_principal
-    ? `style="background-image: url('${h.imagen_principal}')"`
-    : '';
+function renderRoom(h, data) {
+  const moneda = data.moneda;
+  const imgBg = h.imagen_principal ? `style="background-image: url('${h.imagen_principal}')"` : '';
+  const urgency = h.urgencia ? `<span class="urgency-badge">${t('urgency')}</span>` : '';
 
-  const urgency = h.urgencia
-    ? `<span class="urgency-badge">¡Quedan pocas!</span>`
-    : '';
-
-  // Features (capacidad, m², camas)
   const featuresHtml = (h.features || []).map(f => {
     const cantidad = f.cantidad ? `<strong>${f.cantidad}</strong>` : '';
-    const label = f.tipo === 'Size' ? 'm²' :
-                  f.tipo === 'Occupancy' ? (f.cantidad === 1 ? 'persona' : 'personas') :
-                  f.nombre;
+    const label = f.tipo === 'Size' ? 'm²'
+                : f.tipo === 'Occupancy' ? (f.cantidad === 1 ? (currentLang === 'es' ? 'persona' : 'person') : (currentLang === 'es' ? 'personas' : 'people'))
+                : f.nombre;
     return `<span class="feature">${cantidad} ${label}</span>`;
   }).join('');
 
-  // Amenidades (limitar a 8 por compactness)
   const amenities = (h.amenidades || []).slice(0, 8);
   const amenitiesHtml = amenities.map(a =>
     `<span class="amenity-pill ${a.premium ? 'premium' : ''}">${a.nombre}</span>`
   ).join('');
-  const moreAmenities = (h.amenidades || []).length > 8
-    ? `<span class="amenity-pill">+${h.amenidades.length - 8} más</span>`
-    : '';
+  const moreAmenities = (h.amenidades || []).length > 8 ? `<span class="amenity-pill">+${h.amenidades.length - 8}</span>` : '';
 
-  // Tarifas
-  const ratesHtml = (h.tarifas || []).filter(t => t.disponible).map(t => `
-    <div class="rate-option">
-      <div class="plan">
-        <div class="plan-name">${t.rate_plan_nombre}</div>
-      </div>
-      <div class="price">
-        <div class="per-night">${fmtMoney(t.tarifa_promedio_noche, moneda)} <small>/noche</small></div>
-        <div class="total">Total: ${fmtMoney(t.tarifa_total, moneda)}</div>
-      </div>
-    </div>
-  `).join('');
+  const tarifasDisp = (h.tarifas || []).filter(x => x.disponible);
+  const minRate = tarifasDisp.length > 0 ? Math.min(...tarifasDisp.map(x => x.tarifa_promedio_noche)) : 0;
+  const priceBlock = h.disponible ? buildPriceBlock(h, tarifasDisp, minRate, data) : '';
 
   const stock = h.cantidad_disponible > 0
-    ? `${h.cantidad_disponible} ${h.cantidad_disponible === 1 ? 'habitación' : 'habitaciones'} disponibles`
-    : 'Sin disponibilidad';
-
-  const bookUrl = `https://bookings.travelclick.com/99498?datein=${checkIn}&dateout=${checkOut}`;
+    ? `${h.cantidad_disponible} ${h.cantidad_disponible === 1 ? t('roomsSingle') : t('roomsPlural')}`
+    : t('noAvail');
 
   return `
-    <article class="room-card ${h.disponible ? '' : 'unavail'}">
+    <article class="room-card ${h.disponible ? '' : 'unavail'}" data-room="${h.codigo}">
       <div class="room-image" ${imgBg}>
         ${urgency}
         ${h.codigo ? `<span class="code-badge">${h.codigo}</span>` : ''}
@@ -467,25 +856,317 @@ function renderRoom(h, moneda, checkIn, checkOut) {
       <div class="room-body">
         <h3>${h.nombre}</h3>
         <p class="desc">${h.descripcion}</p>
-
         ${featuresHtml ? `<div class="features">${featuresHtml}</div>` : ''}
-
         ${amenitiesHtml ? `<div class="amenities-list">${amenitiesHtml}${moreAmenities}</div>` : ''}
-
-        ${h.disponible ? `<div class="rates">${ratesHtml}</div>` : ''}
-
+        ${priceBlock}
         <div class="room-cta">
           <span class="stock">${stock}</span>
           ${h.disponible
-            ? `<a href="${bookUrl}" target="_blank" rel="noopener">Reservar →</a>`
-            : `<span class="stock">No disponible para estas fechas</span>`}
+            ? `<button id="reserve-${h.codigo}" onclick="goToBed('${h.codigo}')" disabled>${t('selectRate')}</button>`
+            : `<span class="stock">${t('noAvail')}</span>`}
         </div>
       </div>
-    </article>
-  `;
+    </article>`;
+}
+
+function buildPriceBlock(h, tarifasDisp, minRate, data) {
+  const moneda = data.moneda;
+  const numTarifas = tarifasDisp.length;
+  const ratesHtml = tarifasDisp.map(tf => {
+    const plan = (data.rate_plans || []).find(p => p.code === tf.rate_plan_code) || {};
+    const desc = plan.descripcion || '';
+    const cancel = plan.cancelacion || '';
+    return `
+      <div class="rate-option" data-rate="${tf.rate_plan_code}" data-room="${h.codigo}"
+           onclick="seleccionarTarifa('${h.codigo}', '${tf.rate_plan_code}')">
+        <div class="rate-top">
+          <div class="rate-name">${tf.rate_plan_nombre}</div>
+          <div class="rate-price">
+            <div class="per-night">${fmtMoney(tf.tarifa_promedio_noche, moneda)} <small>${t('perNight')}</small></div>
+            <div class="total">Total: ${fmtMoney(tf.tarifa_total, moneda)}</div>
+          </div>
+        </div>
+        ${desc ? `<p class="rate-desc">${desc}</p>` : ''}
+        ${cancel ? `<div class="rate-cancel"><span>ⓘ</span><span>${cancel}</span></div>` : ''}
+      </div>`;
+  }).join('');
+
+  const ratesMeta = numTarifas === 1 ? t('ratesSingle') : t('ratesPlural');
+
+  return `
+    <button class="price-toggle" type="button" onclick="toggleRates('${h.codigo}')" id="toggle-${h.codigo}">
+      <div class="price-info">
+        <span class="label-from">${t('from')}</span>
+        <span class="price-main">${fmtMoney(minRate, moneda)} <small>${t('perNight')}</small></span>
+        <span class="price-meta">${numTarifas} ${ratesMeta}</span>
+      </div>
+      <span class="caret">▾</span>
+    </button>
+    <div class="rates-container" id="rates-${h.codigo}">${ratesHtml}</div>`;
+}
+
+function toggleRates(roomCode) {
+  $('rates-' + roomCode).classList.toggle('open');
+  $('toggle-' + roomCode).classList.toggle('expanded');
+}
+
+const _ratesSelected = {};
+function seleccionarTarifa(roomCode, ratePlanCode) {
+  _ratesSelected[roomCode] = ratePlanCode;
+  document.querySelectorAll(`.rate-option[data-room="${roomCode}"]`).forEach(el => {
+    el.classList.toggle('selected', el.dataset.rate === ratePlanCode);
+  });
+  const btn = $('reserve-' + roomCode);
+  if (btn) {
+    btn.disabled = false;
+    const data = window._lastData;
+    const room = data.habitaciones.find(h => h.codigo === roomCode);
+    const tarifa = room.tarifas.find(x => x.rate_plan_code === ratePlanCode);
+    btn.textContent = `${t('reserveWith')} ${tarifa.rate_plan_nombre} →`;
+  }
+}
+
+function goToBed(roomCode) {
+  const ratePlanCode = _ratesSelected[roomCode];
+  if (!ratePlanCode) return;
+  const data = window._lastData;
+  const room = data.habitaciones.find(h => h.codigo === roomCode);
+  const tarifa = room.tarifas.find(x => x.rate_plan_code === ratePlanCode);
+  const plan = (data.rate_plans || []).find(p => p.code === ratePlanCode) || {};
+
+  reservaState.habitacion = room;
+  reservaState.ratePlan = { ...tarifa, descripcion: plan.descripcion, cancelacion: plan.cancelacion };
+  reservaState.fechas = { checkIn: data.check_in, checkOut: data.check_out, noches: data.noches };
+  reservaState.ocupacion = { adultos: data.adultos, ninos: data.ninos };
+  reservaState.total = tarifa.tarifa_total;
+  reservaState.moneda = data.moneda;
+  reservaState.bedType = null;
+
+  const imgs = BED_IMAGES[room.codigo] || BED_IMAGES.SUP;
+  $('bed-img-king').style.backgroundImage = `url('${BED_IMAGES_BASE}${imgs.king}')`;
+  $('bed-img-twin').style.backgroundImage = `url('${BED_IMAGES_BASE}${imgs.twin}')`;
+  $('bed-king').classList.remove('selected');
+  $('bed-twin').classList.remove('selected');
+
+  $('ctx-bed').innerHTML = renderContextParts(false);
+  goToScreen('bed');
+}
+
+function renderContextParts(includeBed) {
+  const r = reservaState;
+  const parts = [
+    `<span class="ctx-part"><strong>${r.habitacion.nombre}</strong></span>`,
+    `<span class="ctx-part">${r.ratePlan.rate_plan_nombre}</span>`,
+  ];
+  if (includeBed && r.bedType) {
+    parts.push(`<span class="ctx-part">${r.bedType === 'king' ? t('bedKing') : t('bedTwin')}</span>`);
+  }
+  parts.push(`<span class="ctx-part">${fmtDate(r.fechas.checkIn)} → ${fmtDate(r.fechas.checkOut)}</span>`);
+  parts.push(`<span class="ctx-part">${r.ocupacion.adultos} ${t('adults').toLowerCase()}</span>`);
+  parts.push(`<span class="ctx-part"><strong>${fmtMoney(r.total, r.moneda)}</strong></span>`);
+  return parts.join('');
+}
+
+function selectBed(type) {
+  reservaState.bedType = type;
+  $('bed-king').classList.toggle('selected', type === 'king');
+  $('bed-twin').classList.toggle('selected', type === 'twin');
+  setTimeout(() => { goToGuestForm(); }, 400);
+}
+
+function goToGuestForm() {
+  $('ctx-guest').innerHTML = renderContextParts(true);
+  $('total-display').textContent = fmtMoney(reservaState.total, reservaState.moneda);
+  goToScreen('guest');
+}
+
+$('c-number').addEventListener('input', e => {
+  let v = e.target.value.replace(/\D/g, '').slice(0, 19);
+  v = v.replace(/(.{4})/g, '$1 ').trim();
+  e.target.value = v;
+});
+$('c-exp').addEventListener('input', e => {
+  let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+  if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
+  e.target.value = v;
+});
+$('c-cvv').addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+});
+
+function validateField(input) {
+  const wrap = input.closest('.field');
+  if (!wrap) return true;
+  let valid = true;
+  if (input.required && !input.value.trim()) valid = false;
+  if (input.type === 'email' && input.value && !/^\S+@\S+\.\S+$/.test(input.value)) valid = false;
+  if (input.id === 'c-number') {
+    const digits = input.value.replace(/\s/g, '');
+    if (digits.length < 13 || digits.length > 19) valid = false;
+  }
+  if (input.id === 'c-exp') {
+    const m = input.value.match(/^(\d{2})\/(\d{2})$/);
+    if (!m || +m[1] < 1 || +m[1] > 12) valid = false;
+    else {
+      const yy = +m[2], mm = +m[1];
+      const now = new Date();
+      const currentYear = now.getFullYear() % 100;
+      const currentMonth = now.getMonth() + 1;
+      if (yy < currentYear || (yy === currentYear && mm < currentMonth)) valid = false;
+    }
+  }
+  if (input.id === 'c-cvv') {
+    if (input.value.length < 3 || input.value.length > 4) valid = false;
+  }
+  wrap.classList.toggle('has-error', !valid);
+  input.classList.toggle('invalid', !valid);
+  return valid;
+}
+
+document.querySelectorAll('#reserve-form input, #reserve-form select').forEach(el => {
+  el.addEventListener('blur', () => validateField(el));
+});
+
+async function confirmarReserva(e) {
+  e.preventDefault();
+
+  let allValid = true;
+  document.querySelectorAll('#reserve-form input[required], #reserve-form select[required]').forEach(el => {
+    if (!validateField(el)) allValid = false;
+  });
+  if (!$('e-terms').checked) {
+    allValid = false;
+    alert(currentLang === 'es' ? 'Debes aceptar los términos y condiciones' : 'You must accept the terms and conditions');
+  }
+  if (!allValid) return;
+
+  reservaState.huesped = {
+    nombre: $('g-firstname').value.trim(),
+    apellido: $('g-lastname').value.trim(),
+    email: $('g-email').value.trim(),
+    telefono: $('g-phone').value.trim(),
+    pais: $('g-country').value,
+  };
+  reservaState.tarjeta = {
+    titular: $('c-name').value.trim(),
+    numero: $('c-number').value.replace(/\s/g, ''),
+    expiracion: $('c-exp').value,
+    cvv: $('c-cvv').value,
+  };
+  reservaState.extras = {
+    horaLlegada: $('e-arrival').value,
+    comentarios: $('e-comments').value.trim(),
+    terminos: true,
+  };
+
+  // Llamar al endpoint /api/reservar
+  const btn = $('btn-confirm');
+  btn.disabled = true;
+  btn.textContent = currentLang === 'es' ? 'Procesando…' : 'Processing…';
+
+  try {
+    const payload = construirPayloadReserva(reservaState);
+    const r = await fetch('/api/reservar', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+
+    if (r.status === 503) {
+      // Modo scraping - reservas online no disponibles aún
+      mostrarMensajeReservaPendiente();
+      return;
+    }
+
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      throw new Error(err.detail || `Error ${r.status}`);
+    }
+
+    const data = await r.json();
+    mostrarConfirmacion(data);
+  } catch (err) {
+    alert((currentLang === 'es' ? 'Error: ' : 'Error: ') + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = t('confirmBtn');
+  }
+}
+
+function construirPayloadReserva(state) {
+  // Estructura basada en el cURL real capturado de iHotelier
+  // (será refinada cuando lleguen credenciales Amadeus oficiales)
+  return {
+    hotelCode: 99498,
+    languageCode: currentLang === 'es' ? 'ES_ES' : 'EN_US',
+    huesped: state.huesped,
+    tarjeta: state.tarjeta,
+    extras: state.extras,
+    habitacion: {
+      codigo: state.habitacion.codigo,
+      nombre: state.habitacion.nombre,
+      room_type_code: state.habitacion.room_type_code,
+      pms_room_external_code: state.habitacion.pms_room_external_code,
+    },
+    ratePlan: {
+      code: state.ratePlan.rate_plan_code,
+      nombre: state.ratePlan.rate_plan_nombre,
+    },
+    bedType: state.bedType,
+    fechas: state.fechas,
+    ocupacion: state.ocupacion,
+    total: state.total,
+    moneda: state.moneda,
+  };
+}
+
+function mostrarMensajeReservaPendiente() {
+  // En modo scraping, el endpoint /api/reservar devuelve 503
+  // Mostramos un resumen al usuario para que contacte al hotel
+  const r = reservaState;
+  const maskedCard = r.tarjeta.numero.slice(0, 4) + ' **** **** ' + r.tarjeta.numero.slice(-4);
+  const msg = currentLang === 'es'
+    ? '⚠ Sistema de reservas online en mantención\n\n' +
+      'Tu información fue validada correctamente, pero el envío a OPERA ' +
+      'aún no está habilitado.\n\nResumen de tu solicitud:\n\n'
+    : '⚠ Online booking system in maintenance\n\n' +
+      'Your information was validated correctly, but submission to OPERA ' +
+      'is not enabled yet.\n\nSummary of your request:\n\n';
+
+  alert(
+    msg +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `${r.habitacion.nombre} · ${r.ratePlan.rate_plan_nombre}\n` +
+    `${r.bedType === 'king' ? t('bedKing') : t('bedTwin')}\n` +
+    `${r.fechas.checkIn} → ${r.fechas.checkOut} (${r.fechas.noches} ${r.fechas.noches === 1 ? t('nightsSingle') : t('nightsPlural')})\n` +
+    `${r.ocupacion.adultos} ${t('adults').toLowerCase()}${r.ocupacion.ninos > 0 ? ' + ' + r.ocupacion.ninos + ' ' + t('children').toLowerCase() : ''}\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `${r.huesped.nombre} ${r.huesped.apellido}\n` +
+    `${r.huesped.email} · ${r.huesped.telefono}\n` +
+    `${r.huesped.pais}\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `${currentLang === 'es' ? 'Tarjeta' : 'Card'}: ${maskedCard}\n` +
+    `${t('totalLabel')}: ${fmtMoney(r.total, r.moneda)}\n\n` +
+    (currentLang === 'es'
+      ? 'Por favor, contacta al hotel directamente para finalizar tu reserva:\n' +
+        'rioserrano.com'
+      : 'Please contact the hotel directly to finalize your booking:\n' +
+        'rioserrano.com')
+  );
+}
+
+function mostrarConfirmacion(data) {
+  // Mostrar pantalla de confirmación cuando la reserva sí se hace
+  const code = data.reservation?.uniqueId || data.reservation?.bookingId || '—';
+  const msg = currentLang === 'es'
+    ? `✅ ¡Reserva confirmada!\n\nNúmero de reserva: ${code}\n\nRecibirás un email de confirmación a la brevedad.`
+    : `✅ Booking confirmed!\n\nReservation number: ${code}\n\nYou will receive a confirmation email shortly.`;
+  alert(msg);
+  // TODO: cuando definamos pantalla bonita de confirmación, reemplazar alert
 }
 
 $('form-search').addEventListener('submit', buscar);
+applyI18n();
 </script>
 
 </body>
